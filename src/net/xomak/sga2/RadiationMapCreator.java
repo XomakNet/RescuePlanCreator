@@ -42,7 +42,8 @@ public class RadiationMapCreator {
                     current = maxLevel;
                 }
 
-                Color test = new Color((int)Math.floor((255 * (maxLevel - current)) / maxLevel), ((int)Math.floor((255 * current) / maxLevel)), 0);
+
+                Color test = Color.getHSBColor(0, (float)(current/maxLevel), 1);
                 bufferedImage.setRGB(x, y, test.getRGB());
             }
         }

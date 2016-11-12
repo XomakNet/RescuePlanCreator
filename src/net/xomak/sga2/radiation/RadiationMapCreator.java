@@ -1,4 +1,4 @@
-package net.xomak.sga2;
+package net.xomak.sga2.radiation;
 
 import net.xomak.sga2.field.Field;
 
@@ -8,9 +8,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by regis on 12.11.2016.
- */
 public class RadiationMapCreator {
     private Field field;
     private double[][] radiation;

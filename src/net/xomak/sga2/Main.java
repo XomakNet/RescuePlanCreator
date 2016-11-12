@@ -2,11 +2,15 @@ package net.xomak.sga2;
 
 import net.xomak.sga2.algorithms.Dijkstra;
 import net.xomak.sga2.field.Field;
-import net.xomak.sga2.field.MinPathVertex;
+import net.xomak.sga2.radiation.MinRadiationPathFinder;
+import net.xomak.sga2.radiation.MinRadiationVertex;
+import net.xomak.sga2.field.Node;
 import net.xomak.sga2.graph.Edge;
 import net.xomak.sga2.graph.Path;
 import net.xomak.sga2.graph.Vertex;
 import net.xomak.sga2.graph.VertexAnalyzer;
+import net.xomak.sga2.radiation.RadiationCalculator;
+import net.xomak.sga2.radiation.RadiationMapCreator;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,47 +19,55 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by regis on 11.11.2016.
- */
 public class Main {
     public static void main(String[] args) {
-        PictureLoader l = new PictureLoader("map.png");
-        Field field = l.getField();
-        BufferedImage bufferedImage = l.getImage();
-        Vertex vertex = field.getStartNodeForMinimalPathSearch();
-        Dijkstra d = new Dijkstra(vertex, true, new VertexAnalyzer() {
-            @Override
-            public boolean shouldConsider(final Vertex vertex, Double distance) {
+        PictureLoader loader;
+        try {
+            loader = new PictureLoader("map.png");
+            Field field = loader.getField();
+            BufferedImage bufferedImage = loader.getImage();
 
-                if(distance < 1300) {
-                    return true;
-                }
-                else return false;
+            RadiationCalculator radiationCalculator = new RadiationCalculator(field, "radiation.dat", 8);
+            double[][] radiation = radiationCalculator.get();
+
+            RadiationMapCreator radiationMapCreator = new RadiationMapCreator(field, radiation);
+            radiationMapCreator.saveToFile("radiation.png");
+
+            MinRadiationPathFinder minRadiationPathFinder = new MinRadiationPathFinder(field, radiation, field.getStartNode(),
+                    field.getFinishNode(), 1300);
+            minRadiationPathFinder.run();
+
+            Path minPath = minRadiationPathFinder.getPath();
+
+            if(minPath != null) {
+                System.out.println("Total radiation level: "+minRadiationPathFinder.getPath().getWeight());
+                System.out.println("Path length: "+minRadiationPathFinder.getPathLength());
+                System.out.println("Saving results to the image files...");
+
+                BufferedImage radiationMapImage = radiationMapCreator.drawImage();
+
+                drawMinimalRadiationPath(minRadiationPathFinder.getPath(), radiationMapImage);
+                File pathImageFile = new File("path.png");
+
+                ImageIO.write(radiationMapImage, "png", pathImageFile);
             }
-        });
+            else {
+                System.out.println("Sorry, no path, satisfying given requirements, could be found.");
+            }
+        }
+        catch (IOException e) {
+            System.err.println("IO Error: "+e);
+        } catch (ClassNotFoundException e) {
+            System.err.println("IO Error, while reading cache file: "+e);
+        }
 
-        RadiationCalculator radiationCalculator = new RadiationCalculator(field, "radiation.dat", 8);
-        double[][] t = radiationCalculator.get();
-        RadiationMapCreator radiationMapCreator = new RadiationMapCreator(field, t);
-        radiationMapCreator.saveToFile("radiation.png");
+    }
 
-        d.run();
-        System.out.println(d.getDistanceFromStart(field.getStartVertex()));
-        Path path = d.getPathToStartFrom(field.getStartVertex());
+    public static void drawMinimalRadiationPath(final Path path, final BufferedImage bufferedImage) {
         List<Edge> edges = path.getEdges();
         for(Edge edge : edges) {
-            MinPathVertex mpv = (MinPathVertex)edge.getFrom();
-            bufferedImage.setRGB(mpv.getNode().getX(), mpv.getNode().getY(), 9999999);
+            MinRadiationVertex mpv = (MinRadiationVertex)edge.getFrom();
+            bufferedImage.setRGB(mpv.getNode().getX(), mpv.getNode().getY(), Color.BLACK.getRGB());
         }
-
-
-        File outputfile = new File("path.png");
-        try {
-            ImageIO.write(bufferedImage, "png", outputfile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 }

@@ -1,19 +1,12 @@
 package net.xomak.sga2;
 
 import net.xomak.sga2.field.Field;
-import net.xomak.sga2.field.Node;
 import net.xomak.sga2.field.NodeType;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-
-/**
- * Created by regis on 11.11.2016.
- */
 
 
 public class PictureLoader {
@@ -43,12 +36,8 @@ public class PictureLoader {
         }
     }
 
-    public PictureLoader(String path) {
-        try {
-            image = ImageIO.read(new File(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public PictureLoader(String path) throws IOException {
+        image = ImageIO.read(new File(path));
         int width = image.getWidth();
         int height = image.getHeight();
         field = new Field(width, height);

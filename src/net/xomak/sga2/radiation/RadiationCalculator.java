@@ -1,6 +1,5 @@
-package net.xomak.sga2;
+package net.xomak.sga2.radiation;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import net.xomak.sga2.field.Field;
 import net.xomak.sga2.field.Node;
 
@@ -9,19 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by regis on 11.11.2016.
- */
+
 public class RadiationCalculator {
 
     private File cacheFile;
     private Field field;
     private int threadsNum;
 
-    protected static double calculate(int x1, int y1, int x2, int y2) {
-        double dst = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
-        //return 100000 / Math.pow(dst, 2);
-        return 1000000*Math.exp(-dst/2);
+    static double calculate(int x1, int y1, int x2, int y2) {
+        double dst = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+        return 100000 / Math.pow(dst, 2);
+        //return 1000000 * Math.exp(-dst / 2);
     }
 
     private double[][] calculate(Field field, int threadsNum) {
@@ -30,7 +27,7 @@ public class RadiationCalculator {
         int xPerThread = (field.getWidth() / threadsNum) + 1;
         List<Thread> threads = new ArrayList<>(threadsNum);
         int x = 0;
-        while(x < field.getWidth()) {
+        while (x < field.getWidth()) {
             int xTill = (x + xPerThread > field.getWidth()) ? field.getWidth() : x + xPerThread;
             RadiationCalculatorThread thread = new RadiationCalculatorThread(field.getWidth(),
                     field.getHeight(), result, x, xTill, sourceNodes);
@@ -48,17 +45,11 @@ public class RadiationCalculator {
         return result;
     }
 
-    public double[][] loadFromCache() {
+    public double[][] loadFromCache() throws IOException, ClassNotFoundException {
         double radiation[][] = null;
-        if(cacheFile.exists() && !cacheFile.isDirectory()) {
-            try {
-                ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(cacheFile));
-                radiation = (double[][])inputStream.readObject();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+        if (cacheFile.exists() && !cacheFile.isDirectory()) {
+            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(cacheFile));
+            radiation = (double[][]) inputStream.readObject();
         }
         return radiation;
     }
@@ -74,9 +65,9 @@ public class RadiationCalculator {
         return radiation;
     }
 
-    public double[][] get() {
+    public double[][] get() throws IOException, ClassNotFoundException {
         double[][] result = loadFromCache();
-        if(result == null) {
+        if (result == null) {
             result = calculateAndWrite();
         }
         return result;
@@ -90,8 +81,7 @@ public class RadiationCalculator {
 
 }
 
-class RadiationCalculatorThread extends Thread
-{
+class RadiationCalculatorThread extends Thread {
     private double[][] result;
     private int from;
     private int to;
@@ -99,7 +89,7 @@ class RadiationCalculatorThread extends Thread
     private int height;
     private Set<Node> sourceNodes;
 
-    public RadiationCalculatorThread(final int width, final int height, final double[][] result, final int from, final int to,
+    RadiationCalculatorThread(final int width, final int height, final double[][] result, final int from, final int to,
                                      final Set<Node> sourceNodes) {
         this.result = result;
         this.from = from;
@@ -109,12 +99,11 @@ class RadiationCalculatorThread extends Thread
         this.height = height;
     }
 
-    public void run()
-    {
-        for(int x = from; x < to; x++) {
-            for(int y = 0; y < height; y++) {
+    public void run() {
+        for (int x = from; x < to; x++) {
+            for (int y = 0; y < height; y++) {
                 double currentResult = 0;
-                for(Node node : sourceNodes) {
+                for (Node node : sourceNodes) {
                     currentResult += RadiationCalculator.calculate(x, y, node.getX(), node.getY());
                 }
                 result[x][y] = currentResult;

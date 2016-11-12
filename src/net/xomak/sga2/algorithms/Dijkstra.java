@@ -7,10 +7,6 @@ import net.xomak.sga2.graph.VertexAnalyzer;
 
 import java.util.*;
 
-/**
- * My Dijkstra algorithm from previous hometask.
- * It is included here for test purposes.
- */
 public class Dijkstra {
 
     private Map<Vertex, Double> distances = new HashMap<>();
@@ -30,8 +26,24 @@ public class Dijkstra {
     private Vertex startVertex;
     private boolean isSearchInversed;
     private PriorityQueue<Vertex> pendingVertexes = null;
+
+    public void setAnalyzer(final VertexAnalyzer analyzer) {
+        this.analyzer = analyzer;
+    }
+
+    public VertexAnalyzer getAnalyzer() {
+        return analyzer;
+    }
+
     private VertexAnalyzer analyzer;
 
+
+    public Dijkstra(final Vertex startVertex, boolean inversed) {
+        this.isSearchInversed = inversed;
+        this.startVertex = startVertex;
+        VertexComparator vertexComparator = new VertexComparator(distances);
+        this.pendingVertexes = new PriorityQueue<>(vertexComparator);
+    }
 
     public Dijkstra(final Vertex startVertex, boolean inversed, VertexAnalyzer analyzer) {
         this.isSearchInversed = inversed;

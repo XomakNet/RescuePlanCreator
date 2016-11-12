@@ -8,9 +8,6 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by regis on 11.11.2016.
- */
 public class Field {
     private Node pixels[][];
     private Node startNode;
@@ -82,12 +79,13 @@ public class Field {
         return nodes;
     }
 
-    public Vertex getStartNodeForMinimalPathSearch() {
-        return new MinPathVertex(this, finishNode.getX(), finishNode.getY());
+    public Node getFinishNode() {
+        return finishNode;
     }
 
-    public Vertex getStartVertex() {
-        return new MinPathVertex(this, startNode.getX(), startNode.getY());
+
+    public Node getStartNode() {
+        return startNode;
     }
 }
 

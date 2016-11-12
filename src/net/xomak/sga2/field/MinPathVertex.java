@@ -2,13 +2,17 @@ package net.xomak.sga2.field;
 
 import net.xomak.sga2.graph.Edge;
 import net.xomak.sga2.graph.SimpleEdge;
-import net.xomak.sga2.graph.Vertex;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class MinPathVertex implements Vertex {
+
+/**
+ * Vertex in graph, constructed as such vertexes and edges with weights, equal to the geometric length between them.
+ * Build one vertex - another will be constructed recursively.
+ */
+public class MinPathVertex extends VertexWithNode {
 
     private Node node;
     private Field field;
@@ -44,22 +48,6 @@ public class MinPathVertex implements Vertex {
         return "MinPathVertex{" +
                 "node=" + node +
                 '}';
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof MinPathVertex)) return false;
-
-        MinPathVertex that = (MinPathVertex) o;
-
-        return node.equals(that.node);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return node.hashCode();
     }
 
     public Node getNode() {

@@ -9,6 +9,10 @@ import java.util.*;
 
 public class Dijkstra {
 
+    public Map<Vertex, Double> getDistances() {
+        return distances;
+    }
+
     private Map<Vertex, Double> distances = new HashMap<>();
     private Map<Vertex, Edge> edgesToStartVertex = new HashMap<>();
     private Set<Vertex> visited = new HashSet<>();

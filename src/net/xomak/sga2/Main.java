@@ -2,15 +2,12 @@ package net.xomak.sga2;
 
 import net.xomak.sga2.algorithms.Dijkstra;
 import net.xomak.sga2.field.Field;
-import net.xomak.sga2.radiation.MinRadiationPathFinder;
-import net.xomak.sga2.radiation.MinRadiationVertex;
+import net.xomak.sga2.radiation.*;
 import net.xomak.sga2.field.Node;
 import net.xomak.sga2.graph.Edge;
 import net.xomak.sga2.graph.Path;
 import net.xomak.sga2.graph.Vertex;
 import net.xomak.sga2.graph.VertexAnalyzer;
-import net.xomak.sga2.radiation.RadiationCalculator;
-import net.xomak.sga2.radiation.RadiationMapCreator;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -33,7 +30,9 @@ public class Main {
             RadiationMapCreator radiationMapCreator = new RadiationMapCreator(field, radiation);
             radiationMapCreator.saveToFile("radiation.png");
 
-            MinRadiationPathFinder minRadiationPathFinder = new MinRadiationPathFinder(field, radiation, field.getStartNode(),
+//            MinRadiationPathFinder minRadiationPathFinder = new SingleDijkstraMinRadiationPathFinder(field, radiation, field.getStartNode(),
+//                    field.getFinishNode(), 1300);
+            MinRadiationPathFinder minRadiationPathFinder = new DoubleDijkstraMinRadiationPathFinder(field, radiation, field.getStartNode(),
                     field.getFinishNode(), 1300);
             minRadiationPathFinder.run();
 

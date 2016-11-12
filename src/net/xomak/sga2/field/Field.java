@@ -62,6 +62,11 @@ public class Field {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
+    /**
+     * Returns set of achievable node (in one step) from current. Works only for START, FINISH and EMPTY nodes
+     * @param node Node with type START, FINISH or EMPTY
+     * @return Set of reachable nodes
+     */
     public Set<Node> getAchievableNodes(final Node node) {
         int x = node.getX();
         int y = node.getY();

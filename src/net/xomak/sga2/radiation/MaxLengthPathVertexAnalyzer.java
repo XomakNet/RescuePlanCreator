@@ -17,7 +17,7 @@ import java.util.Map;
  */
 class MaxLengthPathVertexAnalyzer implements VertexAnalyzer {
     private Vertex finishVertex;
-    private int maxLength;
+    private double maxLength;
     private Map<Vertex, Double> distancesToFinish;
     private Dijkstra dijkstra;
     private Map<Vertex, Double> realDistances;
@@ -32,7 +32,7 @@ class MaxLengthPathVertexAnalyzer implements VertexAnalyzer {
      * @param maxLength         Path's max length
      * @param distancesToFinish Precalculated distances from all vertex to some
      */
-    public MaxLengthPathVertexAnalyzer(final Vertex startVertex, final Dijkstra dijkstra, final int maxLength,
+    public MaxLengthPathVertexAnalyzer(final Vertex startVertex, final Dijkstra dijkstra, final double maxLength,
                                        final Map<Vertex, Double> distancesToFinish) {
         this.finishVertex = startVertex;
         this.dijkstra = dijkstra;
@@ -49,7 +49,7 @@ class MaxLengthPathVertexAnalyzer implements VertexAnalyzer {
      * @param dijkstra    Instance of a Dijkstra's algorithm
      * @param maxLength   Path's max length
      */
-    public MaxLengthPathVertexAnalyzer(final Vertex startVertex, final Dijkstra dijkstra, final int maxLength) {
+    public MaxLengthPathVertexAnalyzer(final Vertex startVertex, final Dijkstra dijkstra, final double maxLength) {
         this(startVertex, dijkstra, maxLength, null);
     }
 

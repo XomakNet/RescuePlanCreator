@@ -45,8 +45,7 @@ public class MinRadiationVertex extends VertexWithNode {
         Set<Edge> edges = new HashSet<>();
         for (Node currentNode : field.getAchievableNodes(node)) {
             MinRadiationVertex vertex = container.getVertex(new MinRadiationVertex(field, currentNode.getX(), currentNode.getY(), radiation, container));
-            edges.add(new SimpleEdge(vertex, this,
-                    radiation[currentNode.getX()][currentNode.getY()]));
+            edges.add(new SimpleEdge(vertex, this, radiation[node.getX()][node.getY()])); // Was current node
         }
         return edges;
     }

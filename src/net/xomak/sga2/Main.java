@@ -28,7 +28,9 @@ public class Main {
 
 //            MinRadiationPathFinder minRadiationPathFinder = new SingleDijkstraMinRadiationPathFinder(field, radiation, field.getStartNode(),
 //                    field.getFinishNode(), 1300);
-            MinRadiationPathFinder minRadiationPathFinder = new DoubleDijkstraMinRadiationPathFinder(field, radiation, field.getStartNode(),
+//            MinRadiationPathFinder minRadiationPathFinder = new DoubleDijkstraMinRadiationPathFinder(field, radiation, field.getStartNode(),
+//                    field.getFinishNode(), 1300);
+            MinRadiationPathFinder minRadiationPathFinder = new DijkstraAStarMinRadiationPathFinder(field, radiation, field.getStartNode(),
                     field.getFinishNode(), 1300);
             minRadiationPathFinder.run();
 

@@ -1,9 +1,5 @@
 package net.xomak.sga2.algorithms;
 
-import net.xomak.sga2.graph.Edge;
-import net.xomak.sga2.graph.Vertex;
-import net.xomak.sga2.graph.VertexAnalyzer;
-
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -14,11 +10,6 @@ import java.util.Set;
 public abstract class AStar<StepType extends AStarStep> {
 
     protected PriorityQueue<StepType> pendingSteps;
-
-    public StepType getMinPathLastStep() {
-        return minPathLastStep;
-    }
-
     protected StepType minPathLastStep;
 
     public AStar(final StepType startStep, final Comparator<StepType> comparator) {
@@ -31,10 +22,14 @@ public abstract class AStar<StepType extends AStarStep> {
         pendingSteps.add(startStep);
     }
 
+    public StepType getMinPathLastStep() {
+        return minPathLastStep;
+    }
+
     public void run() {
-        while(!pendingSteps.isEmpty()) {
+        while (!pendingSteps.isEmpty()) {
             StepType currentStep = pendingSteps.poll();
-            if(handleStep(currentStep)) {
+            if (handleStep(currentStep)) {
                 break;
             }
         }
@@ -46,7 +41,7 @@ public abstract class AStar<StepType extends AStarStep> {
 
     protected boolean isShortestFound() {
         StepType minimalPendingStep = pendingSteps.peek();
-        if(minPathLastStep != null && minPathLastStep.compareTo(minimalPendingStep) < 0) {
+        if (minPathLastStep != null && minPathLastStep.compareTo(minimalPendingStep) < 0) {
             return true;
         }
         return false;
@@ -55,15 +50,19 @@ public abstract class AStar<StepType extends AStarStep> {
     protected abstract boolean shouldConsider(StepType step);
 
     protected boolean handleStep(StepType step) {
-        if(shouldConsider(step)) {
-            if (isLastStep(step)) {
-                if (minPathLastStep == null || step.compareTo(minPathLastStep) < 0) {
-                    minPathLastStep = step;
-                    return isShortestFound();
+
+        if (isLastStep(step)) {
+            if (minPathLastStep == null || step.compareTo(minPathLastStep) < 0) {
+                minPathLastStep = step;
+                System.out.println("Shortest found " + minPathLastStep);
+                return isShortestFound();
+            }
+        } else {
+            Set<StepType> stepsFromHere = getStepsFrom(step);
+            for (StepType newStep : stepsFromHere) {
+                if (shouldConsider(newStep)) {
+                    pendingSteps.add(newStep);
                 }
-            } else {
-                Set<StepType> stepsFromHere = getStepsFrom(step);
-                pendingSteps.addAll(stepsFromHere);
             }
         }
         return false;

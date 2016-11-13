@@ -1,9 +1,13 @@
 package net.xomak.sga2;
 
 import net.xomak.sga2.field.Field;
+import net.xomak.sga2.field.VertexWithNode;
 import net.xomak.sga2.graph.Edge;
 import net.xomak.sga2.graph.Path;
-import net.xomak.sga2.radiation.*;
+import net.xomak.sga2.radiation.DijkstraAStarMinRadiationPathFinder;
+import net.xomak.sga2.radiation.MinRadiationPathFinder;
+import net.xomak.sga2.radiation.RadiationCalculator;
+import net.xomak.sga2.radiation.RadiationMapCreator;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -29,9 +33,9 @@ public class Main {
 //            MinRadiationPathFinder minRadiationPathFinder = new SingleDijkstraMinRadiationPathFinder(field, radiation, field.getStartNode(),
 //                    field.getFinishNode(), 1300);
 //            MinRadiationPathFinder minRadiationPathFinder = new DoubleDijkstraMinRadiationPathFinder(field, radiation, field.getStartNode(),
-//                    field.getFinishNode(), 1300);
+//                    field.getFinishNode(), 872);
             MinRadiationPathFinder minRadiationPathFinder = new DijkstraAStarMinRadiationPathFinder(field, radiation, field.getStartNode(),
-                    field.getFinishNode(), 1300);
+                    field.getFinishNode(), 1000);
             minRadiationPathFinder.run();
 
             Path minPath = minRadiationPathFinder.getPath();
@@ -61,7 +65,7 @@ public class Main {
     public static void drawMinimalRadiationPath(final Path path, final BufferedImage bufferedImage) {
         List<Edge> edges = path.getEdges();
         for (Edge edge : edges) {
-            MinRadiationVertex mpv = (MinRadiationVertex) edge.getFrom();
+            VertexWithNode mpv = (VertexWithNode) edge.getFrom();
             bufferedImage.setRGB(mpv.getNode().getX(), mpv.getNode().getY(), Color.BLACK.getRGB());
         }
     }

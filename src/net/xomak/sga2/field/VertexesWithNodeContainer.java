@@ -5,6 +5,7 @@ import java.util.Map;
 
 /**
  * Container for VertexWithNode, intended to prevent object dublicates
+ *
  * @param <T> Exact type of VertexWithNode
  */
 public class VertexesWithNodeContainer<T extends VertexWithNode> {
@@ -13,6 +14,7 @@ public class VertexesWithNodeContainer<T extends VertexWithNode> {
     /**
      * Returns vertex with node.id equals to the node.id of given vertex, if it exists
      * or adds this vertex to the container.
+     *
      * @param vertex Vertex to get
      * @return Vertex, which is guaranteed to be the only one with given node.id
      */

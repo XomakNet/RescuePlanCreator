@@ -17,12 +17,14 @@ public class Dijkstra {
     private boolean isSearchInversed;
     private PriorityQueue<Vertex> pendingVertexes = null;
     private VertexAnalyzer analyzer;
+
     public Dijkstra(final Vertex startVertex, boolean inversed) {
         this.isSearchInversed = inversed;
         this.startVertex = startVertex;
         VertexComparator vertexComparator = new VertexComparator(distances);
         this.pendingVertexes = new PriorityQueue<>(vertexComparator);
     }
+
     public Dijkstra(final Vertex startVertex, boolean inversed, VertexAnalyzer analyzer) {
         this.isSearchInversed = inversed;
         this.startVertex = startVertex;

@@ -1,18 +1,20 @@
 package net.xomak.sga2.radiation;
 
 import net.xomak.sga2.algorithms.AStarGraph;
+import net.xomak.sga2.algorithms.AStarGraphStep;
 import net.xomak.sga2.algorithms.Dijkstra;
 import net.xomak.sga2.field.*;
+import net.xomak.sga2.graph.Edge;
 import net.xomak.sga2.graph.Path;
-import net.xomak.sga2.graph.Vertex;
+import net.xomak.sga2.graph.SimpleEdge;
 
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
-/**
- * Created by regis on 13.11.2016.
- */
+
 public class DijkstraAStarMinRadiationPathFinder implements MinRadiationPathFinder {
 
+    MaxLengthPathVertexAnalyzer pathLengthAnalyzer;
     private Dijkstra geometricDijkstra;
     private Dijkstra radiationDijkstra;
     private Field field;
@@ -20,14 +22,15 @@ public class DijkstraAStarMinRadiationPathFinder implements MinRadiationPathFind
     private double[][] radiation;
     private VertexesWithNodeContainer<MinPathVertex> minPathContainer;
     private VertexWithNode finishVertexForDistance;
-    MaxLengthPathVertexAnalyzer pathLengthAnalyzer;
     private AStarGraph ma;
+    private Double maxPathLength;
 
     public DijkstraAStarMinRadiationPathFinder(final Field field, final double[][] radiation, final Node from,
-                                                final Node to, final int maxPathLength) {
+                                               final Node to, final int maxPathLength) {
         this.field = field;
         this.from = from;
         this.radiation = radiation;
+        this.maxPathLength = (double) maxPathLength;
 
         VertexesWithNodeContainer<MinRadiationVertex> radiationVertexesContainer = new VertexesWithNodeContainer<>();
         MinRadiationVertex finishVertexForRadiation = new MinRadiationVertex(field, to.getX(), to.getY(), radiation, radiationVertexesContainer);
@@ -48,20 +51,32 @@ public class DijkstraAStarMinRadiationPathFinder implements MinRadiationPathFind
         VertexWithNode startVertexForDistance = new MinPathVertex(field, from.getX(), from.getY(), minPathContainer);
 
         ma = new AStarGraph(radiationDijkstra.getDistances(),
-        geometricDijkstra.getDistances(), pathLengthAnalyzer.getRealDistances(), radiation,startVertexForDistance,
-        finishVertexForDistance, true, 1250.0);
-        System.out.println("Mega algorithm started");
+                geometricDijkstra.getDistances(), pathLengthAnalyzer.getRealDistances(), radiation, startVertexForDistance,
+                finishVertexForDistance, true, maxPathLength);
         ma.run();
     }
 
     @Override
     public Path getPath() {
-        System.out.println(ma.getMinPathLastStep());
+        List<Edge> edges = new LinkedList<>();
+        AStarGraphStep currentStep = ma.getMinPathLastStep();
+        if (currentStep != null) {
+            VertexWithNode prevVertex = currentStep.getStepVertex();
+            currentStep = currentStep.getPreviousStep();
+            while (currentStep != null) {
+                VertexWithNode currentVertex = currentStep.getStepVertex();
+                Node node = currentVertex.getNode();
+                edges.add(new SimpleEdge(prevVertex, currentVertex, radiation[node.getX()][node.getY()]));
+                prevVertex = currentVertex;
+                currentStep = currentStep.getPreviousStep();
+            }
+            return new Path(edges);
+        }
         return null;
     }
 
     @Override
     public double getPathLength() {
-        return 0;
+        return ma.getMinPathLastStep().getCurrentPathLength();
     }
 }

@@ -2,14 +2,39 @@ package net.xomak.sga2.algorithms;
 
 import net.xomak.sga2.field.VertexWithNode;
 
-/**
- * Created by regis on 13.11.2016.
- */
+import java.util.HashSet;
+
 public class AStarGraphStep extends AStarStep {
 
 
     private VertexWithNode stepVertex;
     private Double distanceByMinRadiationPath;
+    private HashSet<Long> visitedVertexesIds = new HashSet<>();
+    private AStarGraphStep previousStep;
+    private Double currentRadiationLevel;
+    private Double currentPathLength;
+    private Double minPossibleRadiation;
+    private Double minPossiblePathLength;
+    private Double heuristic;
+
+    public AStarGraphStep(final VertexWithNode stepVertex, final AStarGraphStep previousStep, final Double currentRadiationLevel, final Double currentPathLength, final Double minPossibleRadiation, final Double minPossiblePathLength, final Double distanceByMinRadiationPath) {
+        this.stepVertex = stepVertex;
+        this.currentRadiationLevel = currentRadiationLevel;
+        this.currentPathLength = currentPathLength;
+        this.minPossibleRadiation = minPossibleRadiation;
+        this.minPossiblePathLength = minPossiblePathLength;
+        this.distanceByMinRadiationPath = distanceByMinRadiationPath;
+        this.previousStep = previousStep;
+        this.heuristic = this.currentRadiationLevel + minPossibleRadiation;
+//        if(previousStep != null) {
+//            visitedVertexesIds.addAll(previousStep.visitedVertexesIds);
+//            visitedVertexesIds.add(previousStep.getStepVertex().getId());
+//        }
+    }
+
+    public HashSet<Long> getVisitedVertexesIds() {
+        return visitedVertexesIds;
+    }
 
     @Override
     public String toString() {
@@ -22,20 +47,6 @@ public class AStarGraphStep extends AStarStep {
                 ", minPossiblePathLength=" + minPossiblePathLength +
                 '}';
     }
-    private AStarGraphStep previousStep;
-
-    public AStarGraphStep(final VertexWithNode stepVertex, final AStarGraphStep previousStep, final Double currentRadiationLevel, final Double currentPathLength, final Double minPossibleRadiation, final Double minPossiblePathLength, final Double distanceByMinRadiationPath) {
-        this.stepVertex = stepVertex;
-        this.previousStep = previousStep;
-        this.currentRadiationLevel = currentRadiationLevel;
-        this.currentPathLength = currentPathLength;
-        this.minPossibleRadiation = minPossibleRadiation;
-        this.minPossiblePathLength = minPossiblePathLength;
-        this.distanceByMinRadiationPath = distanceByMinRadiationPath;
-        this.heuristic = this.currentRadiationLevel + minPossibleRadiation;
-    }
-
-    private Double currentRadiationLevel;
 
     public Double getCurrentRadiationLevel() {
         return currentRadiationLevel;
@@ -49,14 +60,6 @@ public class AStarGraphStep extends AStarStep {
         return currentPathLength + minPossiblePathLength;
     }
 
-    private Double currentPathLength;
-
-    private Double minPossibleRadiation;
-    private Double minPossiblePathLength;
-
-    private Double heuristic;
-
-
     public Double getHeuristic() {
 
         return this.heuristic;
@@ -68,13 +71,21 @@ public class AStarGraphStep extends AStarStep {
 
     @Override
     public int compareTo(final AStarStep o) {
-        if(o instanceof AStarGraphStep) {
-            AStarGraphStep that = (AStarGraphStep)o;
-            int byHeuristic = this.getHeuristic().compareTo(that.getHeuristic());
-            if(byHeuristic == 0) {
-                return this.getPotentialPathLength().compareTo(that.getPotentialPathLength());
+        if (o instanceof AStarGraphStep) {
+            AStarGraphStep that = (AStarGraphStep) o;
+//            if(that.distanceByMinRadiationPath + that.currentPathLength > 1280 && this.distanceByMinRadiationPath + that.currentPathLength < 1280) {
+//                return -1;
+//            }
+//            else if(that.distanceByMinRadiationPath + that.currentPathLength < 1280 && this.distanceByMinRadiationPath + that.currentPathLength > 1280) {
+//                return 1;
+//            } else
+            {
+                int byHeuristic = this.getHeuristic().compareTo(that.getHeuristic());
+                if (byHeuristic == 0) {
+                    return this.getPotentialPathLength().compareTo(that.getPotentialPathLength());
+                }
+                return byHeuristic;
             }
-            return byHeuristic;
         } else {
             throw new IllegalArgumentException("Comparison between AStarStep and AStarGraphStep is not supported");
         }

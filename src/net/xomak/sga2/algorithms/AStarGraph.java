@@ -9,9 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by regis on 13.11.2016.
- */
+
 public class AStarGraph extends AStar<AStarGraphStep> {
 
     private Map<Vertex, Double> radiationDistances;
@@ -55,8 +53,8 @@ public class AStarGraph extends AStar<AStarGraphStep> {
     protected Set<AStarGraphStep> getStepsFrom(final AStarGraphStep currentStep) {
         Set<AStarGraphStep> steps = new HashSet<>();
         VertexWithNode vertex = currentStep.getStepVertex();
-        for(Edge edge : getEdgesFrom(vertex)) {
-            VertexWithNode nextVertex = (VertexWithNode)edge.getOppositeVertex(vertex);
+        for (Edge edge : getEdgesFrom(vertex)) {
+            VertexWithNode nextVertex = (VertexWithNode) edge.getOppositeVertex(vertex);
             Double newRadiation = currentStep.getCurrentRadiationLevel() + getRadiationIn(nextVertex);
             Double newPathLength = currentStep.getCurrentPathLength() + edge.getWeight();
             AStarGraphStep newStep = new AStarGraphStep(nextVertex, currentStep, newRadiation, newPathLength, radiationDistances.get(nextVertex), geometricDistances.get(nextVertex), pathsByMinimalRadiation.get(nextVertex));
@@ -73,14 +71,21 @@ public class AStarGraph extends AStar<AStarGraphStep> {
     @Override
     protected boolean shouldConsider(final AStarGraphStep step) {
         //System.out.println(step);
+//        if(step.getVisitedVertexesIds().contains(step.getStepVertex().getId())) {
+//            return false;
+//        }
         AStarGraphStep current = step.getPreviousStep();
-        while(current != null) {
-            if(current.equals(step)) {
+        while (current != null) {
+            if (current.equals(step)) {
                 return false;
             }
             current = current.getPreviousStep();
         }
-        return step.getPotentialPathLength() < maxGeometricDistance;
+        if (step.getPotentialPathLength() < maxGeometricDistance) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

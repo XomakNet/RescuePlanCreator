@@ -7,17 +7,26 @@ import java.util.List;
  * Represents a path in the graph
  */
 public class Path implements Comparable<Path> {
+    private List<Edge> edges;
+    private double weight;
+
+    public Path() {
+        this.edges = new LinkedList<>();
+        this.weight = 0;
+    }
+
+    public Path(final List<Edge> edges) {
+        this.edges = edges;
+        this.weight = getPathWeight(edges);
+    }
+
     public List<Edge> getEdges() {
         return edges;
     }
 
-    private List<Edge> edges;
-
     public double getWeight() {
         return weight;
     }
-
-    private double weight;
 
     public Edge getByIndex(final int i) {
         return edges.get(i);
@@ -36,10 +45,9 @@ public class Path implements Comparable<Path> {
     }
 
     public Vertex getStartVertex() {
-        if(this.size() > 0) {
+        if (this.size() > 0) {
             return edges.get(0).getFrom();
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -48,10 +56,9 @@ public class Path implements Comparable<Path> {
         return "{(" + weight + "): " + edges + "}";
     }
 
-
     public Edge getLastEdge() {
-        if(this.size() > 0) {
-           return edges.get(edges.size() - 1);
+        if (this.size() > 0) {
+            return edges.get(edges.size() - 1);
         }
         return null;
     }
@@ -59,45 +66,33 @@ public class Path implements Comparable<Path> {
     public Path getSubPath(final int indexTo) {
         List<Edge> newPath = new LinkedList<>();
         int i = 0;
-        for(Edge edge : this.edges) {
-            if(i < indexTo) {
+        for (Edge edge : this.edges) {
+            if (i < indexTo) {
                 newPath.add(edge);
                 i++;
-            }
-            else break;
+            } else break;
         }
         return new Path(newPath);
     }
 
     public void insertAtBeginning(final Path path) {
-        if(edges.size() > 0 && path.size() > 0) {
+        if (edges.size() > 0 && path.size() > 0) {
             if (path.getLastEdge().getTo().equals(getStartVertex())) {
                 this.weight += path.getWeight();
                 this.edges.addAll(0, path.edges);
             }
-        }
-        else {
+        } else {
             this.weight = path.getWeight() + this.getWeight();
             this.edges.addAll(path.edges);
         }
     }
 
-    public Path() {
-        this.edges = new LinkedList<>();
-        this.weight = 0;
-    }
-
     private double getPathWeight(final List<Edge> edges) {
         double weight = 0;
-        for(Edge edge : edges) {
+        for (Edge edge : edges) {
             weight += edge.getWeight();
         }
         return weight;
-    }
-
-    public Path(final List<Edge> edges) {
-        this.edges = edges;
-        this.weight = getPathWeight(edges);
     }
 
     @Override

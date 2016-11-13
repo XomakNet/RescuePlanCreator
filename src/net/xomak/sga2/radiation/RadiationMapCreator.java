@@ -22,25 +22,25 @@ public class RadiationMapCreator {
         bufferedImage = new BufferedImage(field.getWidth(), field.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 
         double maxLevel = 0;
-        for(int x = 0; x < field.getWidth(); x++) {
-            for(int y = 0; y < field.getWidth(); y++) {
+        for (int x = 0; x < field.getWidth(); x++) {
+            for (int y = 0; y < field.getWidth(); y++) {
                 double current = radiation[x][y];
-                if(current != Double.POSITIVE_INFINITY) {
+                if (current != Double.POSITIVE_INFINITY) {
                     maxLevel = Math.max(current, maxLevel);
                 }
             }
         }
-        for(int x = 0; x < field.getWidth(); x++) {
-            for(int y = 0; y < field.getWidth(); y++) {
+        for (int x = 0; x < field.getWidth(); x++) {
+            for (int y = 0; y < field.getWidth(); y++) {
                 double current = radiation[x][y];
 
                 // TODO: Change this
-                if(current > maxLevel) {
+                if (current > maxLevel) {
                     current = maxLevel;
                 }
 
 
-                Color test = Color.getHSBColor(0, (float)(current/maxLevel), 1);
+                Color test = Color.getHSBColor(0, (float) (current / maxLevel), 1);
                 bufferedImage.setRGB(x, y, test.getRGB());
             }
         }
@@ -48,7 +48,7 @@ public class RadiationMapCreator {
     }
 
     public void saveToFile(String path) {
-        if(bufferedImage == null) {
+        if (bufferedImage == null) {
             drawImage();
         }
         File outputfile = new File(path);

@@ -3,6 +3,7 @@ package net.xomak.sga2.radiation;
 import net.xomak.sga2.field.Field;
 import net.xomak.sga2.field.Node;
 import net.xomak.sga2.field.VertexWithNode;
+import net.xomak.sga2.field.VertexesWithNodeContainer;
 import net.xomak.sga2.graph.Edge;
 import net.xomak.sga2.graph.SimpleEdge;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -19,11 +20,13 @@ public class MinRadiationVertex extends VertexWithNode {
     private Node node;
     private Field field;
     private double[][] radiation;
+    private VertexesWithNodeContainer<MinRadiationVertex> container;
 
-    public MinRadiationVertex(final Field field, int x, int y, double[][] radiation) {
+    public MinRadiationVertex(final Field field, int x, int y, double[][] radiation, VertexesWithNodeContainer container) {
         this.field = field;
         this.node = field.getNodeByCoordinates(x, y);
         this.radiation = radiation;
+        this.container = container;
     }
 
 
@@ -41,7 +44,8 @@ public class MinRadiationVertex extends VertexWithNode {
     public Set<Edge> getIncomingEdges() {
         Set<Edge> edges = new HashSet<>();
         for (Node currentNode : field.getAchievableNodes(node)) {
-            edges.add(new SimpleEdge(new MinRadiationVertex(field, currentNode.getX(), currentNode.getY(), radiation), this,
+            MinRadiationVertex vertex = container.getVertex(new MinRadiationVertex(field, currentNode.getX(), currentNode.getY(), radiation, container));
+            edges.add(new SimpleEdge(vertex, this,
                     radiation[currentNode.getX()][currentNode.getY()]));
         }
         return edges;

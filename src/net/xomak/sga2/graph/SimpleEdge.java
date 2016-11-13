@@ -2,6 +2,16 @@ package net.xomak.sga2.graph;
 
 
 public class SimpleEdge implements Edge, Comparable<SimpleEdge> {
+    private Vertex from;
+    private Vertex to;
+    private double weight;
+
+    public SimpleEdge(final Vertex from, final Vertex to, final double weight) {
+        this.from = from;
+        this.to = to;
+        this.weight = weight;
+    }
+
     public Vertex getFrom() {
         return from;
     }
@@ -12,17 +22,6 @@ public class SimpleEdge implements Edge, Comparable<SimpleEdge> {
 
     public Double getWeight() {
         return weight;
-    }
-
-    private Vertex from;
-    private Vertex to;
-    private double weight;
-
-
-    public SimpleEdge(final Vertex from, final Vertex to, final double weight) {
-        this.from = from;
-        this.to = to;
-        this.weight = weight;
     }
 
     @Override

@@ -8,6 +8,7 @@ import net.xomak.sga2.graph.Vertex;
 public abstract class VertexWithNode implements Vertex {
     /**
      * Gets associated node
+     *
      * @return node
      */
     public abstract Node getNode();

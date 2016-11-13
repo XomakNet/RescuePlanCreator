@@ -16,10 +16,12 @@ public class MinPathVertex extends VertexWithNode {
 
     private Node node;
     private Field field;
+    private VertexesWithNodeContainer<MinPathVertex> container;
 
-    public MinPathVertex(final Field field, int x, int y) {
+    public MinPathVertex(final Field field, int x, int y, VertexesWithNodeContainer container) {
         this.field = field;
         this.node = field.getNodeByCoordinates(x, y);
+        this.container = container;
     }
 
 
@@ -36,9 +38,11 @@ public class MinPathVertex extends VertexWithNode {
     @Override
     public Set<Edge> getIncomingEdges() {
         Set<Edge> edges = new HashSet<>();
-        for(Node currentNode : field.getAchievableNodes(node)) {
+        for (Node currentNode : field.getAchievableNodes(node)) {
             double weight = (currentNode.getX() != node.getX() && currentNode.getY() != node.getY()) ? Math.sqrt(2) : 1;
-            edges.add(new SimpleEdge(new MinPathVertex(field, currentNode.getX(), currentNode.getY()), this, weight));
+            MinPathVertex vertex = container.getVertex(new MinPathVertex(field, currentNode.getX(), currentNode.getY(),
+                    container));
+            edges.add(new SimpleEdge(vertex, this, weight));
         }
         return edges;
     }

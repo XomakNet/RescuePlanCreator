@@ -19,23 +19,6 @@ public class PictureLoader {
     private Field field;
     private BufferedImage image;
 
-    private static NodeType getTypeByColor(final int color) {
-        switch(color) {
-            case BLACK_COLOR:
-                return NodeType.WALL;
-            case WHITE_COLOR:
-                return NodeType.EMPTY;
-            case ORANGE_COLOR:
-                return NodeType.SOURCE;
-            case RED_COLOR:
-                return NodeType.START;
-            case GREEN_COLOR:
-                return NodeType.FINISH;
-            default:
-                throw new IllegalArgumentException("Incorrect color code: "+color);
-        }
-    }
-
     public PictureLoader(String path) throws IOException {
         image = ImageIO.read(new File(path));
         int width = image.getWidth();
@@ -48,6 +31,23 @@ public class PictureLoader {
                 NodeType type = getTypeByColor(color);
                 field.addNode(type, nodeId++, x, y);
             }
+        }
+    }
+
+    private static NodeType getTypeByColor(final int color) {
+        switch (color) {
+            case BLACK_COLOR:
+                return NodeType.WALL;
+            case WHITE_COLOR:
+                return NodeType.EMPTY;
+            case ORANGE_COLOR:
+                return NodeType.SOURCE;
+            case RED_COLOR:
+                return NodeType.START;
+            case GREEN_COLOR:
+                return NodeType.FINISH;
+            default:
+                throw new IllegalArgumentException("Incorrect color code: " + color);
         }
     }
 

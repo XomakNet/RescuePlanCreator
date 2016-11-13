@@ -1,10 +1,7 @@
 package net.xomak.sga2.radiation;
 
 import net.xomak.sga2.algorithms.Dijkstra;
-import net.xomak.sga2.field.Field;
-import net.xomak.sga2.field.MinPathVertex;
-import net.xomak.sga2.field.Node;
-import net.xomak.sga2.field.VertexWithNode;
+import net.xomak.sga2.field.*;
 import net.xomak.sga2.graph.Path;
 import net.xomak.sga2.graph.Vertex;
 
@@ -26,14 +23,16 @@ public class DoubleDijkstraMinRadiationPathFinder implements MinRadiationPathFin
     public DoubleDijkstraMinRadiationPathFinder(final Field field, final double[][] radiation, final Node from,
                                                 final Node to, final int maxPathLength) {
 
-        finishVertexForRadiation = new MinRadiationVertex(field, to.getX(), to.getY(), radiation);
-        startVertexForRadiation = new MinRadiationVertex(field, from.getX(), from.getY(), radiation);
+        VertexesWithNodeContainer<MinRadiationVertex> radiationVertexesContainer = new VertexesWithNodeContainer<>();
+        finishVertexForRadiation = new MinRadiationVertex(field, to.getX(), to.getY(), radiation, radiationVertexesContainer);
+        startVertexForRadiation = new MinRadiationVertex(field, from.getX(), from.getY(), radiation, radiationVertexesContainer);
 
-        VertexWithNode startVertexForDistance = new MinPathVertex(field, from.getX(), from.getY());
+        VertexesWithNodeContainer<MinPathVertex> minPathContainer = new VertexesWithNodeContainer<>();
+        VertexWithNode startVertexForDistance = new MinPathVertex(field, from.getX(), from.getY(), minPathContainer);
 
         minPathDijkstra = new Dijkstra(startVertexForDistance, true);
         minPathDijkstra.setAnalyzer((vertex, currentDistance) -> {
-            if(currentDistance > maxPathLength) {
+            if (currentDistance > maxPathLength) {
                 return false;
             }
             return true;

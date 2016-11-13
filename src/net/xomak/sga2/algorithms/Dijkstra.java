@@ -9,46 +9,20 @@ import java.util.*;
 
 public class Dijkstra {
 
-    public Map<Vertex, Double> getDistances() {
-        return distances;
-    }
-
     private Map<Vertex, Double> distances = new HashMap<>();
     private Map<Vertex, Edge> edgesToStartVertex = new HashMap<>();
     private Set<Vertex> visited = new HashSet<>();
-
-    public void addExcludedEdge(final Edge excludedEdge) {
-        this.excludedEdges.add(excludedEdge);
-    }
-
     private Set<Edge> excludedEdges = new HashSet<>();
-
-    public Vertex getStartVertex() {
-        return startVertex;
-    }
-
     private Vertex startVertex;
     private boolean isSearchInversed;
     private PriorityQueue<Vertex> pendingVertexes = null;
-
-    public void setAnalyzer(final VertexAnalyzer analyzer) {
-        this.analyzer = analyzer;
-    }
-
-    public VertexAnalyzer getAnalyzer() {
-        return analyzer;
-    }
-
     private VertexAnalyzer analyzer;
-
-
     public Dijkstra(final Vertex startVertex, boolean inversed) {
         this.isSearchInversed = inversed;
         this.startVertex = startVertex;
         VertexComparator vertexComparator = new VertexComparator(distances);
         this.pendingVertexes = new PriorityQueue<>(vertexComparator);
     }
-
     public Dijkstra(final Vertex startVertex, boolean inversed, VertexAnalyzer analyzer) {
         this.isSearchInversed = inversed;
         this.startVertex = startVertex;
@@ -57,11 +31,31 @@ public class Dijkstra {
         this.pendingVertexes = new PriorityQueue<>(vertexComparator);
     }
 
+    public Map<Vertex, Double> getDistances() {
+        return distances;
+    }
+
+    public void addExcludedEdge(final Edge excludedEdge) {
+        this.excludedEdges.add(excludedEdge);
+    }
+
+    public Vertex getStartVertex() {
+        return startVertex;
+    }
+
+    public VertexAnalyzer getAnalyzer() {
+        return analyzer;
+    }
+
+    public void setAnalyzer(final VertexAnalyzer analyzer) {
+        this.analyzer = analyzer;
+    }
+
     public void run() {
         distances.put(startVertex, 0.0);
         pendingVertexes.add(startVertex);
 
-        while(!pendingVertexes.isEmpty()) {
+        while (!pendingVertexes.isEmpty()) {
             Vertex currentVertex = pendingVertexes.poll();
             handleVertex(currentVertex);
         }
@@ -78,23 +72,23 @@ public class Dijkstra {
     public Path getPathToStartFrom(final Vertex vertex) {
         Vertex currentVertex = vertex;
         List<Edge> path = new LinkedList<>();
-        while(!currentVertex.equals(startVertex)) {
+        while (!currentVertex.equals(startVertex)) {
             Edge currentEdge = edgesToStartVertex.get(currentVertex);
-            if(currentEdge != null) {
+            if (currentEdge != null) {
                 path.add(currentEdge);
                 currentVertex = currentEdge.getOppositeVertex(currentVertex);
             } else {
                 return null;
             }
         }
-        if(!isSearchInversed) {
+        if (!isSearchInversed) {
             Collections.reverse(path);
         }
         return new Path(path);
     }
 
     private void handleVertex(final Vertex vertex) {
-        if(analyzer == null || analyzer.shouldConsider(vertex, distances.get(vertex))) {
+        if (analyzer == null || analyzer.shouldConsider(vertex, distances.get(vertex))) {
             Set<Edge> edgesFromVertexSet = isSearchInversed ? vertex.getIncomingEdges() : vertex.getOutgoingEdges();
             List<Edge> edgesFromVertexList = new LinkedList<>(edgesFromVertexSet);
             while (!edgesFromVertexList.isEmpty()) {
@@ -107,7 +101,7 @@ public class Dijkstra {
                     if (oldDst == null || newDst < oldDst) {
                         distances.put(neighborVertex, newDst);
                         edgesToStartVertex.put(neighborVertex, currentEdge);
-                        if(pendingVertexes.contains(neighborVertex)) {
+                        if (pendingVertexes.contains(neighborVertex)) {
                             pendingVertexes.remove(neighborVertex);
                         }
                         pendingVertexes.add(neighborVertex);

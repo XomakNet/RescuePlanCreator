@@ -3,12 +3,20 @@ package net.xomak.sga2.field;
 
 public class Node {
     private NodeType type;
+    private long id;
+    private int x;
+    private int y;
+
+    public Node(final NodeType type, final long id, final int x, final int y) {
+        this.type = type;
+        this.id = id;
+        this.x = x;
+        this.y = y;
+    }
 
     public long getId() {
         return id;
     }
-
-    private long id;
 
     public NodeType getType() {
         return type;
@@ -20,16 +28,6 @@ public class Node {
 
     public int getY() {
         return y;
-    }
-
-    private int x;
-    private int y;
-
-    public Node(final NodeType type, final long id, final int x, final int y) {
-        this.type = type;
-        this.id = id;
-        this.x = x;
-        this.y = y;
     }
 
     @Override

@@ -15,6 +15,12 @@ public class RadiationCalculator {
     private Field field;
     private int threadsNum;
 
+    public RadiationCalculator(Field field, String cachePath, int threadsNum) {
+        cacheFile = new File(cachePath);
+        this.field = field;
+        this.threadsNum = threadsNum;
+    }
+
     static double calculate(int x1, int y1, int x2, int y2) {
         double dst = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
         return 100000 / Math.pow(dst, 2);
@@ -73,12 +79,6 @@ public class RadiationCalculator {
         return result;
     }
 
-    public RadiationCalculator(Field field, String cachePath, int threadsNum) {
-        cacheFile = new File(cachePath);
-        this.field = field;
-        this.threadsNum = threadsNum;
-    }
-
 }
 
 class RadiationCalculatorThread extends Thread {
@@ -90,7 +90,7 @@ class RadiationCalculatorThread extends Thread {
     private Set<Node> sourceNodes;
 
     RadiationCalculatorThread(final int width, final int height, final double[][] result, final int from, final int to,
-                                     final Set<Node> sourceNodes) {
+                              final Set<Node> sourceNodes) {
         this.result = result;
         this.from = from;
         this.to = to;
